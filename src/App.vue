@@ -25,7 +25,7 @@
         />
       </div>
     </div>
-    <car-table :cars="filteredCarList"/>
+    <car-table :cars="filteredCarList" @sort-toggle="getCars($event)"/>
   </div>
 </template>
 
@@ -34,6 +34,7 @@ import CarTable from "@/components/CarTable";
 import CustomSearch from "@/components/ui/CustomSearch";
 import {computed, reactive, ref} from "vue";
 import CustomDatePicker from "@/components/ui/CustomDatePicker";
+import axios from "axios";
 
 let searchQuery = reactive({})
 
@@ -49,6 +50,15 @@ let searchQuery = reactive({})
     { id: 9, brand: 'BMW', age: 2010 },
   ]
 
+  async function getCars(sort) {
+    if (!sort) {
+      console.log('https://localhost:3005/cars')
+      await axios.get('https://localhost:3005/cars')
+    } else {
+      console.log('https://localhost:3005/cars/index?sort=' + sort)
+      await axios.get('https://localhost:3005/cars/index?sort=' + sort)
+    }
+  }
 
   function setIdSearch(id) {
     searchQuery.id = id
