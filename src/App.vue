@@ -1,23 +1,29 @@
 <template>
   <div class="container">
-    <div class="search-area">
-      <CustomSearch
-          @start-searching="setIdSearch($event)"
-          @stop-searching="clearIdSearch()"
-          text-placeholder="ID"
-      />
-      <CustomSearch
-          @start-searching="setBrandSearch($event)"
-          @stop-searching="clearBrandSearch()"
-          text-placeholder="Brand"
-      />
-      <CustomSearch
-          @start-searching="setAgeSearch($event)"
-          @stop-searching="clearAgeSearch()"
-          text-placeholder="Age"
-      />
-      <CustomDatePicker title="Start:" />
-      <CustomDatePicker title="End:" />
+    <div class="search-area d-flex justify-content-center align-items-center gap-4 m-2">
+      <div class="d-flex gap-4">
+        <CustomSearch
+            @start-searching="setIdSearch($event)"
+            @stop-searching="clearIdSearch()"
+            text-placeholder="ID"
+        />
+        <CustomSearch
+            @start-searching="setBrandSearch($event)"
+            @stop-searching="clearBrandSearch()"
+            text-placeholder="Brand"
+        />
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <p class="my-0 fw-bold">Select date range:</p>
+        <CustomDatePicker
+            title="Start:"
+            @date-picked="setStartDate($event)"
+        />
+        <CustomDatePicker
+            title="End:"
+            @date-picked="setEndDate($event)"
+        />
+      </div>
     </div>
     <car-table :cars="filteredCarList"/>
   </div>
@@ -60,52 +66,42 @@ let searchQuery = reactive({})
     delete searchQuery.brand
   }
 
-  function setAgeSearch(age) {
-    searchQuery.age = age
-    console.log(searchQuery)
+  function setStartDate(date) {
+    searchQuery.startDate = date
   }
-  function clearAgeSearch() {
-    delete searchQuery.age
+  function setEndDate(date) {
+    searchQuery.endDate = date
   }
+
+  function isCarAgeInDateRange(car) {
+  if (searchQuery.startDate && searchQuery.endDate) {
+    return car.age >= searchQuery.startDate && car.age <= searchQuery.endDate
+  } else return true
+}
 
   const filteredCarList = computed(() => {
     return cars.filter(car => {
-      switch (Object.values(searchQuery).length) {
-        case 0:
-          return cars;
-        case 1:
-          return car.id.toString().includes(searchQuery.id)
-              || car.brand?.toLowerCase().includes(searchQuery.brand?.toLowerCase())
-              || car.age.toString().includes(searchQuery.age);
-        case 2:
-          if (searchQuery.id) {
-            if (searchQuery.brand) {
-              return car.id.toString().includes(searchQuery.id)
-                  && car.brand?.toLowerCase().includes(searchQuery.brand?.toLowerCase())
-            } else {
-              return car.id.toString().includes(searchQuery.id)
-                  && car.age.toString().includes(searchQuery.age);
-            }
-          } else {
-            return car.brand?.toLowerCase().includes(searchQuery.brand?.toLowerCase())
-                && car.age.toString().includes(searchQuery.age);
-          }
-        case 3:
+      if (searchQuery.id) {
+        if (searchQuery.brand) {
           return car.id.toString().includes(searchQuery.id)
               && car.brand?.toLowerCase().includes(searchQuery.brand?.toLowerCase())
-              && car.age.toString().includes(searchQuery.age);
+              && isCarAgeInDateRange(car)
+        } else {
+          return car.id.toString().includes(searchQuery.id) && isCarAgeInDateRange(car)
+        }
+      } else if (searchQuery.brand) {
+        return car.brand?.toLowerCase().includes(searchQuery.brand?.toLowerCase()) && isCarAgeInDateRange(car)
+      } else {
+        return isCarAgeInDateRange(car)
       }
     });
   })
-
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .search-area {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    margin: 20px 0;
+    @media (max-width: 1024px) {
+      flex-wrap: wrap;
+    }
   }
 </style>
