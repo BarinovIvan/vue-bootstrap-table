@@ -49,7 +49,7 @@
     },
     watch: {
       searchInfo() {
-        if (this.searchInfo.length > 1) {
+        if (this.searchInfo.length > 0) {
           this.startSearching()
         } else if (this.searchInfo.length === 0) {
           this.stopSearching()
