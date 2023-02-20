@@ -2,9 +2,9 @@
   <table class="table table-striped table-bordered">
     <thead>
     <tr>
-      <th scope="col">ID</th>
-      <th scope="col">Brand</th>
-      <th scope="col">Year</th>
+      <th scope="col" class="w-25">ID</th>
+      <th scope="col" class="w-50">Brand</th>
+      <th scope="col" class="w-50">Year</th>
     </tr>
     </thead>
     <tbody>
@@ -22,7 +22,3 @@
 
   defineProps(['cars'])
 </script>
-
-<style scoped>
-
-</style>

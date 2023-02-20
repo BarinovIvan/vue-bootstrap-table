@@ -9,7 +9,3 @@
 <script setup>
   defineProps(['carInfo'])
 </script>
-
-<style scoped>
-
-</style>
