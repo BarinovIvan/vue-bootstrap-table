@@ -1,5 +1,5 @@
 <template>
-  <div class="search">
+  <div class="position-relative border-1 border-primary rounded">
     <input
         v-model="searchInfo"
         ref="searchInput"
@@ -9,10 +9,13 @@
         @keyup.enter="startSearching()"
     >
     <svg
-        class="search-find search-icon"
+        class="search-find search-icon position-absolute"
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 88 88"
+        role="button"
+        width="16"
+        height="16"
         @click="startSearching()"
     >
       <path
@@ -20,89 +23,57 @@
     </svg>
     <CloseIcon
         v-if="isSearching"
-        class="search-close search-icon"
+        class="search-close search-icon position-absolute"
         fill="currentColor"
         @click="stopSearching()"
     />
   </div>
 </template>
 
-<script>
+<script setup>
   import CloseIcon from "@/components/iconComponents/CloseIcon";
+  import {ref, watch} from "vue";
 
-  export default {
-    name: "CustomSearch",
-    components: {
-      CloseIcon
-    },
-    props: {
-      textPlaceholder: {
-        type: String,
-        default: ''
-      }
-    },
-    data() {
-      return {
-        searchInfo: '',
-        isSearching: false
-      }
-    },
-    watch: {
-      searchInfo() {
-        if (this.searchInfo.length > 0) {
-          this.startSearching()
-        } else if (this.searchInfo.length === 0) {
-          this.stopSearching()
-        }
-      }
-    },
-    methods: {
-      startSearching() {
-        if (this.searchInfo) {
-          this.$emit('start-searching', this.searchInfo)
-          this.isSearching = true
-        } else {
-          this.$refs.searchInput.focus()
-        }
-      },
-      stopSearching() {
-        this.isSearching = false
-        this.$emit('stop-searching')
-        this.searchInfo = ''
-      }
+  defineProps(['textPlaceholder'])
+  const emit = defineEmits(['start-searching','stop-searching'])
+
+  let searchInfo = ref('')
+  let isSearching = ref(false)
+
+  watch(() => (searchInfo.value), () =>{
+    if (searchInfo.value.length > 0) {
+      startSearching()
+    } else if (searchInfo.value.length === 0) {
+      stopSearching()
+    }
+  })
+
+  function startSearching() {
+    if (searchInfo) {
+      console.log(startSearching)
+      emit('start-searching', searchInfo.value)
+      isSearching.value = true
     }
   }
+
+   function stopSearching() {
+     console.log(stopSearching)
+      isSearching.value = false
+      emit('stop-searching')
+      searchInfo.value = ''
+    }
 </script>
 
 <style lang="scss" scoped>
   .search {
-    position: relative;
-    border: 1px solid white;
-    border-radius: 4px;
-
     &-icon {
-      position: absolute;
       top: 12px;
       right: 12px;
-      color: inherit;
     }
 
     &-close {
       top: 14px;
       right: 40px;
     }
-
-    &-find {
-      width: 16px;
-      height: 16px;
-    }
-
-    @media (max-width: 1024px) {
-      width: 100%;
-    }
-  }
-
-  .white {
-    color: #FFF
   }
 </style>
