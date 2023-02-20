@@ -50,14 +50,12 @@
 
   function startSearching() {
     if (searchInfo) {
-      console.log(startSearching)
       emit('start-searching', searchInfo.value)
       isSearching.value = true
     }
   }
 
    function stopSearching() {
-     console.log(stopSearching)
       isSearching.value = false
       emit('stop-searching')
       searchInfo.value = ''

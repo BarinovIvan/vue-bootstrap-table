@@ -62,7 +62,6 @@ let searchQuery = reactive({})
 
   function setIdSearch(id) {
     searchQuery.id = id
-    console.log(searchQuery)
   }
   function clearIdSearch() {
     delete searchQuery.id
@@ -70,7 +69,6 @@ let searchQuery = reactive({})
 
   function setBrandSearch(brand) {
     searchQuery.brand = brand
-    console.log(searchQuery)
   }
   function clearBrandSearch() {
     delete searchQuery.brand
